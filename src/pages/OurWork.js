@@ -10,39 +10,54 @@ import { Link } from 'react-router-dom';
 
 //animations
 import { motion } from "framer-motion";
-import { pageAnimation } from "../animation";
+import { pageAnimation, photoAnimation, fade, lineAnim, slider, sliderContainer } from "../animation";
+import { useScroll } from '../components/useScroll';
+import { scrollReveal } from '../animation';
 
 const OurWork = () => {
+    const [element, controls] = useScroll();
+    const [element2, controls2] = useScroll();
     return (
-        <Work
-            style={{ background: "#fff" }}
-            variants={pageAnimation}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-        >
-            <Movie>
-                <h2>The Athlete</h2>
-                <div className="line"></div>
-                <Link to="/work/the-athlete">
-                    <img src={athlete} alt="athlete" />
-                </Link>
-            </Movie>
-            <Movie>
-                <h2>The Racer</h2>
-                <div className="line"></div>
-                <Link to="/work/the-racer">
-                    <img src={theracer} alt="the racer" />
-                </Link>
-            </Movie>
-            <Movie>
-                <h2>Good Times</h2>
-                <div className="line"></div>
-                <Link to="/work/good-times">
-                    <img src={goodtimes} alt="good times" />
-                </Link>
-            </Movie>
-        </Work>
+        <>
+            {/* just animating */}
+            <SliderContainer variants={sliderContainer} animate="show" initial="hidden">
+                <Frame1 variants={slider} />
+                <Frame2 variants={slider} />
+                <Frame3 variants={slider} />
+                <Frame4 variants={slider} />
+            </SliderContainer>
+            <Work
+                style={{ background: "#fff" }}
+                variants={pageAnimation}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+            >
+                <Movie variants={fade} animate="show" initial="hidden">
+                    <motion.h2 variants={fade}>The Athlete</motion.h2>
+                    <motion.div variants={lineAnim} className="line"></motion.div>
+                    <Link to="/work/the-athlete">
+                        <Hide>
+                            <motion.img variants={photoAnimation} src={athlete} alt="athlete" />
+                        </Hide>
+                    </Link>
+                </Movie>
+                <Movie variants={scrollReveal} ref={element} animate={controls} initial="hidden">
+                    <h2>The Racer</h2>
+                    <motion.div variants={lineAnim} className="line"></motion.div>
+                    <Link to="/work/the-racer">
+                        <img src={theracer} alt="the racer" />
+                    </Link>
+                </Movie>
+                <Movie variants={scrollReveal} ref={element2} animate={controls2} initial="hidden">
+                    <h2>Good Times</h2>
+                    <motion.div variants={lineAnim} className="line"></motion.div>
+                    <Link to="/work/good-times">
+                        <img src={goodtimes} alt="good times" />
+                    </Link>
+                </Movie>
+            </Work >
+        </>
     );
 }
 
@@ -53,13 +68,16 @@ const Work = styled(motion.div)`
     h2{
         padding: 1rem 0;
     }
+    @media (max-width: 1300px){
+        padding: 2rem;
+    }
 `
 
-const Movie = styled.div`
+const Movie = styled(motion.div)`
     padding-bottom: 10rem;
     .line{
         height: .5rem;
-        background: #ccc;
+        background: #23d997;
         margin-bottom: 3rem;
     }
     img{
@@ -67,6 +85,41 @@ const Movie = styled.div`
         height: 70vh;
         object-fit: cover;
     }
+`
+
+const Hide = styled.div`
+    overflow: hidden;
+`
+
+const Frame1 = styled(motion.div)`
+    position: fixed;
+    left: 0;
+    top: 10%;
+    width: 100%;
+    height: 100vh;
+    background: #fffebf;
+`
+
+const Frame2 = styled(Frame1)`
+    background: #ff8efb;
+`
+
+const Frame3 = styled(Frame1)`
+    background: #8ed2ff;
+`
+
+const Frame4 = styled(Frame1)`
+    background: #8effa0;
+`
+
+const SliderContainer = styled(motion.div)`
+    position: fixed;
+    left: 0;
+    top: 10%;
+    width: 100%;
+    height: 100vh;
+    z-index: 2;
+    pointer-events: none;
 `
 
 export default OurWork;
